@@ -1,0 +1,34 @@
+# Note that 'IdentitiesOnly yes' prevents ssh-agent from serving keys.
+# It requires default (~/.ssh/id_XXX) or explicit (-i, IdentityFile) keys.
+XauthLocation /opt/X11/bin/xauth
+Compression yes
+IdentitiesOnly yes
+IgnoreUnknown UseKeychain
+IgnoreUnknown AddKeysToAgent
+  UseKeychain yes
+  AddKeysToAgent yes
+
+Host *
+  ControlMaster auto
+  ControlPath ~/.ssh/cm-%r@%h:%p
+  ControlPersist yes
+  ServerAliveInterval 60
+  UserKnownHostsFile ~/.ssh/known_hosts
+
+###### Home & Personal SSH Host config ######
+
+# DD-WRT Router doesn't support EC keys
+Host 192.168.1.1
+  ControlMaster no
+  IdentityFile ~/.ssh/personal_rsa
+
+Host *.local
+  ControlMaster no
+  IdentityFile ~/.ssh/personal_ed25519
+  User ryan
+
+Host github.com
+  ControlMaster no
+  Hostname github.com
+  User git
+  IdentityFile ~/.ssh/personal_ed25519

@@ -1,0 +1,69 @@
+[user]
+	name = Ryan McKern
+	email = ryan@orangefort.com
+
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+	ui = auto
+
+[core]
+	quotepath = false
+	excludesfile = /Users/ryan/.gitignore_global
+	pager =
+
+[push]
+	default = simple
+
+[alias]
+	amend = commit --amend
+	authors = !git log --format='%aN' | sort -u
+	branches = branch --all
+	branchname = rev-parse --abbrev-ref HEAD
+	change-commits = "!f() { VAR=$1; OLD=$2; NEW=$3; shift 3; git filter-branch --env-filter \"if [[ \\\"$`echo $VAR`\\\" = '$OLD' ]]; then export $VAR='$NEW'; fi\" $@; }; f "
+	ci = commit
+	co = checkout
+	ffs = clean -ffdx
+	files = show --pretty="format:" --name-only
+	fix-email-fastly = commit --amend --author=\"Ryan McKern <rmckern@fastly.com>\"
+	fix-email-nike = commit --amend --author=\"Ryan McKern <ryan.mckern@nike.com>\"
+	fix-email-orangefort = commit --amend --author=\"Ryan McKern <ryan@orangefort.com>\"
+	fix-email-puppet = commit --amend --author=\"Ryan McKern <ryan.mckern@puppet.com>\"
+	force = push --force
+	lastlog = log -n1
+	oneline = log --pretty=oneline
+	origin = remote add origin
+	pop = stash pop
+	remotes = remote -v
+	rename = mv
+	set-email-fastly = config user.email \"rmckern@fastly.com\"
+	set-email-nike = config user.email \"ryan.mckern@nike.com\"
+	set-email-orangefort = config user.email \"ryan@orangefort.com\"
+	set-email-puppet = config user.email \"ryan.mckern@puppet.com\"
+	set-email-puppetlabs = config user.email \"ryan.mckern@puppetlabs.com\"
+	show-files = show --pretty --name-only
+	sync = "!git fetch; git checkout master; git pull"
+	unstage = reset HEAD
+	upstream = remote add upstream
+	whoami = config user.email
+
+[diff]
+	tool = ksdiff
+[mergetool "ksdiff"]
+	cmd = ksdiff --merge --output \"${MERGED}\" --base \"${BASE}\" -- \"${LOCAL}\" --snapshot \"${REMOTE}\" --snapshot
+	trustExitCode = true
+[mergetool]
+	prompt = false
+[merge]
+	tool = ksdiff
+[difftool]
+	prompt = false
+[difftool "ksdiff"]
+	cmd = ksdiff --partial-changeset --relative-path \"${MERGED}\" -- \"${LOCAL}\" \"${REMOTE}\"
+[credential]
+	helper = osxkeychain
+[filter "lfs"]
+	clean = git-lfs clean %f
+	smudge = git-lfs smudge %f
+	required = true
