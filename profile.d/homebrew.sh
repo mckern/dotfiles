@@ -56,6 +56,8 @@ cache_homebrew(){
 
 # If we're using homebrew to manage things, prepend the relevant bits
 if command -v brew >/dev/null 2>&1; then
+  export HOMEBREW_NO_AUTO_UPDATE=true
+
   brew_prefix="$(brew --prefix)"
   cask_prefix="${brew_prefix}/Caskroom"
   
@@ -121,6 +123,8 @@ if command -v brew >/dev/null 2>&1; then
 
   command -v hub &>/dev/null &&
     alias git="hub"
+
+  alias cask='brew cask'
 
   unset brew_dir
   unset formula_cache
