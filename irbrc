@@ -1,3 +1,5 @@
+# vim: syntax=ruby ts=2 sw=2 sts=2 sr noet
+
 require 'rubygems'
 require 'pp'
 
