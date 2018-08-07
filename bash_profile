@@ -41,7 +41,7 @@ __minimum_viable='3'
 if [[ ${TERM} != 'dumb' ]] && [[ -n ${BASH} ]]; then
   if [[ ${UID} -eq "0" ]] ; then
     # Privileged prompt, ending in #
-    export PS1='\[\033[01;31m\]\h \[\033[01;34m\]\W # \[\033[00m\]'
+    export PS1='\[\033[01;31m\]\h \[\033[01;34m\]\W \$ \[\033[00m\]'
   else
     # Unprivileged prompt, ending in $
     export PS1='\[\033[01;32m\]\u@\h \[\033[01;34m\]\W \$ \[\033[00m\]'
@@ -204,6 +204,8 @@ __normal='\e[22m'
 __end="$(date +"%s")"
 
 # Dump to screen and let me get on with my life!
-printf "%bProfile loaded in %s seconds%b\n" "${__dim}" "$((__end-__begin))" "${__normal}"
-printf "%b> Loaded %s sub-profiles from %s%b\n" "${__dim}" "${__counter}" "${__profiles}" "${__normal}"
+if [[ ${TERM} =~ xterm ]]; then
+  printf "%bProfile loaded in %s seconds%b\n" "${__dim}" "$((__end-__begin))" "${__normal}"
+  printf "%b> Loaded %s sub-profiles from %s%b\n" "${__dim}" "${__counter}" "${__profiles}" "${__normal}"
+fi
 unset __counter __profiles

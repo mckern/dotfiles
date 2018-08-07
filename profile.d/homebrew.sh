@@ -96,6 +96,7 @@ if command -v brew >/dev/null 2>&1; then
 
   grep -q -E '^go$' <<< "${all_formula}" &&
     export GOPATH="${brew_prefix}/var/go"
+    export GOROOT="${brew_prefix}/opt/go/libexec"
     pathmunge "${GOPATH}/bin" before
 
   # Casks
