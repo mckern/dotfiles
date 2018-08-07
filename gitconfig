@@ -20,13 +20,13 @@
 
 [alias]
 	amend = commit --amend
-	authors = !git log --format='%aN' | sort -u
+	authors = !git log --format='%aN <%aE>' | sort -u
 	branches = branch --all
 	branchname = rev-parse --abbrev-ref HEAD
 	change-commits = "!f() { VAR=$1; OLD=$2; NEW=$3; shift 3; git filter-branch --env-filter \"if [[ \\\"$`echo $VAR`\\\" = '$OLD' ]]; then export $VAR='$NEW'; fi\" $@; }; f "
 	ci = commit
 	co = checkout
-	ffs = clean -ffdx
+	dt = difftool
 	files = show --pretty="format:" --name-only
 	fix-email-fastly = commit --amend --author=\"Ryan McKern <rmckern@fastly.com>\"
 	fix-email-nike = commit --amend --author=\"Ryan McKern <ryan.mckern@nike.com>\"
@@ -34,9 +34,11 @@
 	fix-email-puppet = commit --amend --author=\"Ryan McKern <ryan.mckern@puppet.com>\"
 	force = push --force
 	lastlog = log -n1
+	mt = mergetool
 	oneline = log --pretty=oneline
 	origin = remote add origin
 	pop = stash pop
+	ref = rev-parse HEAD
 	remotes = remote -v
 	rename = mv
 	set-email-fastly = config user.email \"rmckern@fastly.com\"
@@ -44,8 +46,9 @@
 	set-email-orangefort = config user.email \"ryan@orangefort.com\"
 	set-email-puppet = config user.email \"ryan.mckern@puppet.com\"
 	set-email-puppetlabs = config user.email \"ryan.mckern@puppetlabs.com\"
+	sha = short-ref
+	short-ref = rev-parse --short=8 HEAD
 	show-files = show --pretty --name-only
-	sync = "!git fetch; git checkout master; git pull"
 	unstage = reset HEAD
 	upstream = remote add upstream
 	whoami = config user.email
