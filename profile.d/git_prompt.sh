@@ -119,5 +119,5 @@ toggle_prompt(){
   set_flat_prompt
   return 0
 }
-
+export toggle_prompt
 export PROMPT_COMMAND="toggle_prompt; ${PROMPT_COMMAND}"
