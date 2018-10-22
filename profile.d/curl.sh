@@ -22,7 +22,7 @@ if type -P curl &> /dev/null; then
       --request "${action}" \
       --silent \
       --include \
-      --write-out "%{url_effective} %{http_code}\n" \
+      --write-out "%{url_effective} %{http_code}\\n" \
       --output /dev/null \
       "${1}"
     return $?
@@ -37,7 +37,7 @@ if type -P curl &> /dev/null; then
       --silent \
       --include \
       --location \
-      --write-out "%{url_effective} %{content_type}\n" \
+      --write-out "%{url_effective} %{content_type}\\n" \
       --output /dev/null \
       "${1}"
     return $?
@@ -85,6 +85,7 @@ if type -P curl &> /dev/null; then
 
     local no_params="${1%%\?*}"
     local output_file="${no_params##*/}"
+    : "${output_file:="${2}"}"
     local user_agent="Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Googlebot/2.1; +http://www.google.com/bot.html) Safari/537.36"
 
     while true; do

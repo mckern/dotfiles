@@ -94,10 +94,16 @@ if command -v brew >/dev/null 2>&1; then
   grep -q gnu-tar <<< "${all_formula}" &&
     pathmunge "${brew_prefix}/opt/gnu-tar/libexec/gnubin" before
 
-  grep -q -E '^go$' <<< "${all_formula}" &&
+  if grep -q -E '^go$' <<< "${all_formula}"; then
     export GOPATH="${brew_prefix}/var/go"
     export GOROOT="${brew_prefix}/opt/go/libexec"
     pathmunge "${GOPATH}/bin" before
+  fi
+
+  if grep -q 'gnupg' <<< "${all_formula}"; then
+    GPG_TTY="$(tty)"
+    export GPG_TTY
+  fi
 
   # Casks
   if grep -q -E '^google-cloud-sdk$' <<< "${all_casks}"; then

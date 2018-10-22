@@ -23,7 +23,7 @@ git_branch_name() {
   branch="$(git rev-parse --abbrev-ref HEAD 2> /dev/null)"
 
   if [[ ${branch} == "HEAD" ]]; then
-    branch='detached*'
+    branch="$(git describe --all 2> /dev/null)"
   fi
 
   echo "(git:${branch})"
@@ -98,11 +98,11 @@ set_flat_prompt(){
 }
 
 set_scm_prompt(){
-  export PS1="\[${bldgrn}\]\u@\h \[${bldblu}\]\W \[${bldcyn}\]\${scm_branch} \[${bldblu}\]\$\[${txtrst}\] "
+  export PS1="\\[${bldgrn}\\]\\u@\\h \\[${bldblu}\\]\\W \\[${bldcyn}\\]\${scm_branch} \\[${bldblu}\\]\$\\[${txtrst}\\] "
 }
 
 set_dirty_scm_prompt(){
-  export PS1="\[${bldgrn}\]\u@\h \[${bldblu}\]\W \[${bldred}\]\${scm_branch} \[${bldblu}\]\$\[${txtrst}\] "
+  export PS1="\\[${bldgrn}\\]\\u@\\h \\[${bldblu}\\]\\W \\[${bldred}\\]\${scm_branch} \\[${bldblu}\\]\$\\[${txtrst}\\] "
 }
 
 toggle_prompt(){
