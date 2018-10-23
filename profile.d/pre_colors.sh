@@ -10,44 +10,68 @@
 : "shellcheck disable=2154,2034"
 
 # Regular
-txtblk="$(tput setaf 0 2>/dev/null || echo '\e[0;30m')"  # Black
-txtred="$(tput setaf 1 2>/dev/null || echo '\e[0;31m')"  # Red
-txtgrn="$(tput setaf 2 2>/dev/null || echo '\e[0;32m')"  # Green
-txtylw="$(tput setaf 3 2>/dev/null || echo '\e[0;33m')"  # Yellow
-txtblu="$(tput setaf 4 2>/dev/null || echo '\e[0;34m')"  # Blue
-txtpur="$(tput setaf 5 2>/dev/null || echo '\e[0;35m')"  # Purple
-txtcyn="$(tput setaf 6 2>/dev/null || echo '\e[0;36m')"  # Cyan
-txtwht="$(tput setaf 7 2>/dev/null || echo '\e[0;37m')"  # White
+txtblk="$(tput setaf 0 || echo '\033[0;30m')" # Black
+txtred="$(tput setaf 1 || echo '\033[0;31m')" # Red
+txtgrn="$(tput setaf 2 || echo '\033[0;32m')" # Green
+txtylw="$(tput setaf 3 || echo '\033[0;33m')" # Yellow
+txtblu="$(tput setaf 4 || echo '\033[0;34m')" # Blue
+txtpur="$(tput setaf 5 || echo '\033[0;35m')" # Purple
+txtcyn="$(tput setaf 6 || echo '\033[0;36m')" # Cyan
+txtwht="$(tput setaf 7 || echo '\033[0;37m')" # White
 
 # Bold
-bldblk="$(tput setaf 0 2>/dev/null)$(tput bold 2>/dev/null || echo '\e[1;30m')"  # Black
-bldred="$(tput setaf 1 2>/dev/null)$(tput bold 2>/dev/null || echo '\e[1;31m')"  # Red
-bldgrn="$(tput setaf 2 2>/dev/null)$(tput bold 2>/dev/null || echo '\e[1;32m')"  # Green
-bldylw="$(tput setaf 3 2>/dev/null)$(tput bold 2>/dev/null || echo '\e[1;33m')"  # Yellow
-bldblu="$(tput setaf 4 2>/dev/null)$(tput bold 2>/dev/null || echo '\e[1;34m')"  # Blue
-bldpur="$(tput setaf 5 2>/dev/null)$(tput bold 2>/dev/null || echo '\e[1;35m')"  # Purple
-bldcyn="$(tput setaf 6 2>/dev/null)$(tput bold 2>/dev/null || echo '\e[1;36m')"  # Cyan
-bldwht="$(tput setaf 7 2>/dev/null)$(tput bold 2>/dev/null || echo '\e[1;37m')"  # White
+txtbld="$(tput bold || echo '\033[1m')"
+bldblk="${txtblk}${txtbld}" # Black
+bldred="${txtred}${txtbld}" # Red
+bldgrn="${txtgrn}${txtbld}" # Green
+bldylw="${txtylw}${txtbld}" # Yellow
+bldblu="${txtblu}${txtbld}" # Blue
+bldpur="${txtpur}${txtbld}" # Purple
+bldcyn="${txtcyn}${txtbld}" # Cyan
+bldwht="${txtwht}${txtbld}" # White
+
+# Dim
+txtdim="$(tput dim || echo '\033[2m')"
+dimblk="${txtblk}${txtdim}" # Black
+dimred="${txtred}${txtdim}" # Red
+dimgrn="${txtgrn}${txtdim}" # Green
+dimylw="${txtylw}${txtdim}" # Yellow
+dimblu="${txtblu}${txtdim}" # Blue
+dimpur="${txtpur}${txtdim}" # Purple
+dimcyn="${txtcyn}${txtdim}" # Cyan
+dimwht="${txtwht}${txtdim}" # White
+
+# Italics
+txtitl="$(tput sitm || echo '\033[3m')"
+itlblk="${txtblk}${txtitl}" # Black
+itlred="${txtred}${txtitl}" # Red
+itlgrn="${txtgrn}${txtitl}" # Green
+itlylw="${txtylw}${txtitl}" # Yellow
+itlblu="${txtblu}${txtitl}" # Blue
+itlpur="${txtpur}${txtitl}" # Purple
+itlcyn="${txtcyn}${txtitl}" # Cyan
+itlwht="${txtwht}${txtitl}" # White
 
 # Underline
-undblk="$(tput setaf 0 2>/dev/null)$(tput smul 2>/dev/null || echo '\e[4;30m')"  # Black
-undred="$(tput setaf 1 2>/dev/null)$(tput smul 2>/dev/null || echo '\e[4;31m')"  # Red
-undgrn="$(tput setaf 2 2>/dev/null)$(tput smul 2>/dev/null || echo '\e[4;32m')"  # Green
-undylw="$(tput setaf 3 2>/dev/null)$(tput smul 2>/dev/null || echo '\e[4;33m')"  # Yellow
-undblu="$(tput setaf 4 2>/dev/null)$(tput smul 2>/dev/null || echo '\e[4;34m')"  # Blue
-undpur="$(tput setaf 5 2>/dev/null)$(tput smul 2>/dev/null || echo '\e[4;35m')"  # Purple
-undcyn="$(tput setaf 6 2>/dev/null)$(tput smul 2>/dev/null || echo '\e[4;36m')"  # Cyan
-undwht="$(tput setaf 7 2>/dev/null)$(tput smul 2>/dev/null || echo '\e[4;37m')"  # White
+txtund="$(tput smul || echo '\033[4m')"
+undblk="${txtblk}${txtund}" # Black
+undred="${txtred}${txtund}" # Red
+undgrn="${txtgrn}${txtund}" # Green
+undylw="${txtylw}${txtund}" # Yellow
+undblu="${txtblu}${txtund}" # Blue
+undpur="${txtpur}${txtund}" # Purple
+undcyn="${txtcyn}${txtund}" # Cyan
+undwht="${txtwht}${txtund}" # White
 
 # Background
-bakblk="$(tput setab 0 2>/dev/null || echo '\e[40m')"  # Black
-bakred="$(tput setab 1 2>/dev/null || echo '\e[41m')"  # Red
-bakgrn="$(tput setab 2 2>/dev/null || echo '\e[42m')"  # Green
-bakylw="$(tput setab 3 2>/dev/null || echo '\e[43m')"  # Yellow
-bakblu="$(tput setab 4 2>/dev/null || echo '\e[44m')"  # Blue
-bakpur="$(tput setab 5 2>/dev/null || echo '\e[45m')"  # Purple
-bakcyn="$(tput setab 6 2>/dev/null || echo '\e[46m')"  # Cyan
-bakwht="$(tput setab 7 2>/dev/null || echo '\e[47m')"  # White
+bakblk="$(tput setab 0 || echo '\033[40m')" # Black
+bakred="$(tput setab 1 || echo '\033[41m')" # Red
+bakgrn="$(tput setab 2 || echo '\033[42m')" # Green
+bakylw="$(tput setab 3 || echo '\033[43m')" # Yellow
+bakblu="$(tput setab 4 || echo '\033[44m')" # Blue
+bakpur="$(tput setab 5 || echo '\033[45m')" # Purple
+bakcyn="$(tput setab 6 || echo '\033[46m')" # Cyan
+bakwht="$(tput setab 7 || echo '\033[47m')" # White
 
 # Reset
-txtrst="$(tput sgr 0 2>/dev/null || echo '\e[0m')"  # Text Reset
+txtrst="$(tput sgr0 || echo '\033[0m')" # Text Reset
