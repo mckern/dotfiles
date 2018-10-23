@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 
+command -v rbenv &>/dev/null || return
+
+declare CONFIGURE_OPTS
+declare MAKE_OPTS
+declare RBENV_ENABLED
+declare RBENV_ROOT
+declare RUBY_CONFIGURE_OPTS
+
+export CONFIGURE_OPTS MAKE_OPTS RBENV_ENABLED RBENV_ROOT RUBY_CONFIGURE_OPTS
+
 cpu_core_count(){
   if command -v nproc &>/dev/null; then
     nproc
@@ -13,7 +23,9 @@ cpu_core_count(){
   return $?
 }
 
-if command -v rbenv &>/dev/null; then
+enable_rvm(){
+  [[ -n "${RBENV_ENABLED}" ]] && return
+
   RBENV_ROOT="$(brew --prefix)/var/rbenv"
   # shellcheck disable=SC2089
   CONFIGURE_OPTS=" --with-readline-dir='$(brew --prefix readline)'"
@@ -22,8 +34,13 @@ if command -v rbenv &>/dev/null; then
   RUBY_CONFIGURE_OPTS="--without-tcl --without-tk --enable-shared --disable-install-doc"
   MAKE_OPTS="-j$(cpu_core_count)"
 
-  # shellcheck disable=2090
-  export RBENV_ROOT CONFIGURE_OPTS RUBY_CONFIGURE_OPTS MAKE_OPTS
+  eval "$(command rbenv init - --no-rehash)"
+}
 
-  eval "$(rbenv init - --no-rehash)"
-fi
+rbenv(){
+  if [[ -z "${RBENV_ENABLED}" ]]; then
+    echo -e "${txtdim}> rbenv is initializing...${txtrst}"
+    enable_rvm
+  fi
+  command rbenv "${@}"
+}
