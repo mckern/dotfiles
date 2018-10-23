@@ -58,7 +58,7 @@ fi
 # pathmunge is normally provided in RHEL environments,
 # and this is copied almost wholesale from their implementation.
 pathmunge(){
-  if ! grep -q "(^|:)${1}(\$|:)" <<< "${PATH}"; then
+  if ! grep -v -E -q "(^|:)${1}(\$|:)" <<< "${PATH}"; then
     [[ -d ${1} ]] || return
     if [[ ${2} = "after" ]] ; then
       PATH="${PATH}:${1}"
@@ -182,7 +182,7 @@ if [[ -d ${__profiles} ]]; then
 
   # Anything not tagged pre or post
   for __file in "${__profiles}"/*.sh; do
-    [[ "$(basename "${__file}")" =~ ^pre_|post_ ]] && continue
+    [[ ${__file##*/} =~ ^pre_|post_ ]] && continue
     # shellcheck source=/dev/null
     source "${__file}"
     __counter=$((__counter + 1))
@@ -197,15 +197,15 @@ if [[ -d ${__profiles} ]]; then
   shopt -u nullglob
 fi
 
-__dim='\e[2m'
-__normal='\e[22m'
+__dim='\033[2m'
+__normal='\033[22m'
 
 # Wrap up counting the seconds since this started
 __end="$(date +"%s")"
 
 # Dump to screen and let me get on with my life!
 if [[ ${TERM} =~ xterm ]]; then
-  printf "%bProfile loaded in %s seconds%b\n" "${__dim}" "$((__end-__begin))" "${__normal}"
-  printf "%b> Loaded %s sub-profiles from %s%b\n" "${__dim}" "${__counter}" "${__profiles}" "${__normal}"
+  printf "%bProfile loaded in %s seconds%b\\n" "${__dim}" "$((__end-__begin))" "${__normal}"
+  printf "%b> Loaded %s sub-profiles from %s%b\\n" "${__dim}" "${__counter}" "${__profiles}" "${__normal}"
 fi
 unset __counter __profiles
