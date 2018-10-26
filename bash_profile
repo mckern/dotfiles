@@ -58,7 +58,7 @@ fi
 # pathmunge is normally provided in RHEL environments,
 # and this is copied almost wholesale from their implementation.
 pathmunge(){
-  if ! grep -v -E -q "(^|:)${1}(\$|:)" <<< "${PATH}"; then
+  if grep -v -E -q "(^|:)${1}(\$|:)" <<< "${PATH}"; then
     [[ -d ${1} ]] || return
     if [[ ${2} = "after" ]] ; then
       PATH="${PATH}:${1}"
