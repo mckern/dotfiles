@@ -10,22 +10,27 @@ IgnoreUnknown AddKeysToAgent
 
 Host *
   ControlMaster auto
-  ControlPath ~/.ssh/cm-%r@%h:%p
-  ControlPersist yes
+  # from https://man.openbsd.org/ssh_config
+  # %C is a hash of %l%h%p%r:
+  #   %l: The local hostname, including the domain name
+  #   %h: The remote hostname
+  #   %p: The remote port
+  #   %r: The remote username
+  ControlPath ~/.ssh/sockets/%C.sock
+  ControlPersist 600
   ServerAliveInterval 60
   UserKnownHostsFile ~/.ssh/known_hosts
 
 ###### Home & Personal SSH Host config ######
 
-# DD-WRT Router doesn't support EC keys
-Host 192.168.1.1
+# My router doesn't support EC keys
+Host 192.168.1.2
   ControlMaster no
   IdentityFile ~/.ssh/personal_rsa
 
-Host *.local
+Host *.local *.home.mckern.sh
   ControlMaster no
   IdentityFile ~/.ssh/personal_ed25519
-  User ryan
 
 Host github.com
   ControlMaster no
