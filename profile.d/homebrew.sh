@@ -84,16 +84,6 @@ if command -v brew >/dev/null 2>&1; then
   # now configure convenience paths, env. vars, etc.
   # based on what formulas are installed
 
-  # Use GNU utils if they exist
-  grep -q coreutils <<< "${all_formula}" &&
-    pathmunge "${brew_prefix}/opt/coreutils/libexec/gnubin" before
-
-  grep -q findutils <<< "${all_formula}" &&
-    pathmunge "${brew_prefix}/opt/findutils/libexec/gnubin" before
-
-  grep -q gnu-tar <<< "${all_formula}" &&
-    pathmunge "${brew_prefix}/opt/gnu-tar/libexec/gnubin" before
-
   if grep -q -E '^go$' <<< "${all_formula}"; then
     export GOPATH="${brew_prefix}/var/go"
     export GOROOT="${brew_prefix}/opt/go/libexec"
