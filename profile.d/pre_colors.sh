@@ -75,3 +75,9 @@ bakwht="$(tput setab 7 || echo '\033[47m')" # White
 
 # Reset
 txtrst="$(tput sgr0 || echo '\033[0m')" # Text Reset
+
+# Export COLORS_DEFINED so that other scripts can test
+# for these color codes.
+declare -x COLORS_DEFINED
+COLORS_DEFINED="true"
+
