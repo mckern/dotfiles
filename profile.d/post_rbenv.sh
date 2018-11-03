@@ -2,13 +2,18 @@
 
 command -v rbenv &>/dev/null || return
 
-declare CONFIGURE_OPTS
-declare MAKE_OPTS
-declare RBENV_ENABLED
-declare RBENV_ROOT
-declare RUBY_CONFIGURE_OPTS
+if [[ -n "${COLORS_DEFINED}" ]]; then
+  if [[ -f ~/.profile.d/pre_colors.sh ]]; then
+    # shellcheck source=/dev/null
+    source ~/.profile.d/pre_colors.sh
+  fi
+fi
 
-export CONFIGURE_OPTS MAKE_OPTS RBENV_ENABLED RBENV_ROOT RUBY_CONFIGURE_OPTS
+declare -x CONFIGURE_OPTS
+declare -x MAKE_OPTS
+declare -x RBENV_ENABLED
+declare -x RBENV_ROOT
+declare -x RUBY_CONFIGURE_OPTS
 
 cpu_core_count(){
   if command -v nproc &>/dev/null; then
