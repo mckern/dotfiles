@@ -2,7 +2,8 @@
 
 [user]
 	name = Ryan McKern
-	email = ryan@orangefort.com
+	email = ryan@mckern.sh
+	signingkey = FC7DBE9441B199D4
 
 [color]
 	diff = auto
@@ -27,12 +28,16 @@
 	ci = commit
 	co = checkout
 	dt = difftool
+	ec = empty-commit
+	empty-commit = commit --allow-empty
 	files = show --pretty="format:" --name-only
 	fix-email-fastly = commit --amend --author=\"Ryan McKern <rmckern@fastly.com>\"
+	fix-email-github = commit --amend --author=\"Ryan McKern <mckern@mckern.com>\"
+	fix-email-mckern = commit --amend --author=\"Ryan McKern <ryan@mckern.sh>\"
 	fix-email-nike = commit --amend --author=\"Ryan McKern <ryan.mckern@nike.com>\"
 	fix-email-orangefort = commit --amend --author=\"Ryan McKern <ryan@orangefort.com>\"
 	fix-email-puppet = commit --amend --author=\"Ryan McKern <ryan.mckern@puppet.com>\"
-	force = push --force
+	force = push --force-with-lease
 	lastlog = log -n1
 	mt = mergetool
 	oneline = log --pretty=oneline
@@ -42,6 +47,8 @@
 	remotes = remote -v
 	rename = mv
 	set-email-fastly = config user.email \"rmckern@fastly.com\"
+	set-email-github = config user.email \"mckern@github.com\"
+	set-email-mckern = config user.email \"ryan@mckern.sh\"
 	set-email-nike = config user.email \"ryan.mckern@nike.com\"
 	set-email-orangefort = config user.email \"ryan@orangefort.com\"
 	set-email-puppet = config user.email \"ryan.mckern@puppet.com\"
@@ -72,3 +79,5 @@
 	clean = git-lfs clean %f
 	smudge = git-lfs smudge %f
 	required = true
+[commit]
+	gpgsign = true
