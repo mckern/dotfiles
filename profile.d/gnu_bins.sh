@@ -18,6 +18,7 @@ gnu_bins=(
   "sha384sum"
   "sha512sum"
   "sort"
+  "xargs"
 )
 
 for bin in "${gnu_bins[@]}"; do
