@@ -60,7 +60,7 @@ if command -v brew >/dev/null 2>&1; then
 
   brew_prefix="$(brew --prefix)"
   cask_prefix="${brew_prefix}/Caskroom"
-  
+
   brew_dir="${HOME}/.homebrew.d"
   [[ -d ${brew_dir} ]] || mkdir -p "${brew_dir}"
 
@@ -94,6 +94,15 @@ if command -v brew >/dev/null 2>&1; then
     GPG_TTY="$(tty)"
     export GPG_TTY
   fi
+
+  if grep -q 'ruby' <<< "${all_formula}"; then
+    pathmunge "${brew_prefix}/opt/ruby/bin" before
+    rehash
+
+    ruby_version="$(ruby -e 'puts RbConfig::CONFIG["ruby_version"]')"
+    pathmunge "${brew_prefix}/lib/ruby/gems/${ruby_version}/bin" before
+  fi
+
 
   # Casks
   if grep -q -E '^google-cloud-sdk$' <<< "${all_casks}"; then
