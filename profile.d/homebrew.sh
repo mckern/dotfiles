@@ -55,87 +55,89 @@ cache_homebrew(){
 }
 
 # If we're using homebrew to manage things, prepend the relevant bits
-if command -v brew >/dev/null 2>&1; then
-  export HOMEBREW_NO_AUTO_UPDATE=true
-
-  brew_prefix="$(brew --prefix)"
-  cask_prefix="${brew_prefix}/Caskroom"
-
-  brew_dir="${HOME}/.homebrew.d"
-  [[ -d ${brew_dir} ]] || mkdir -p "${brew_dir}"
-
-  formula_cache="${brew_dir}/formula"
-  cask_cache="${brew_dir}/casks"
-
-  # Cache formula if the cache is stale
-  if expired "${formula_cache}"; then
-    cache_homebrew "${formula_cache}" "formula"
-  fi
-
-  # Cache casks if the cache is stale
-  if expired "${cask_cache}"; then
-    cache_homebrew "${cask_cache}" "cask"
-  fi
-
-  # Read the cache, and use that for all future comparisons
-  all_formula="$(< "${formula_cache}")"
-  all_casks="$(< "${cask_cache}")"
-
-  # now configure convenience paths, env. vars, etc.
-  # based on what formulas are installed
-
-  if grep -q -E '^go$' <<< "${all_formula}"; then
-    export GOPATH="${brew_prefix}/var/go"
-    export GOROOT="${brew_prefix}/opt/go/libexec"
-    pathmunge "${GOPATH}/bin" before
-  fi
-
-  if grep -q 'gnupg' <<< "${all_formula}"; then
-    GPG_TTY="$(tty)"
-    export GPG_TTY
-  fi
-
-  if grep -q 'ruby' <<< "${all_formula}"; then
-    pathmunge "${brew_prefix}/opt/ruby/bin" before
-    rehash
-
-    ruby_version="$(ruby -e 'puts RbConfig::CONFIG["ruby_version"]')"
-    pathmunge "${brew_prefix}/lib/ruby/gems/${ruby_version}/bin" before
-  fi
-
-
-  # Casks
-  if grep -q -E '^google-cloud-sdk$' <<< "${all_casks}"; then
-    # shellcheck source=/dev/null
-    source "${cask_prefix}/google-cloud-sdk/latest/google-cloud-sdk/path.bash.inc"
-    # shellcheck source=/dev/null
-    source "${cask_prefix}/google-cloud-sdk/latest/google-cloud-sdk/completion.bash.inc"
-  fi
-
-  case "${BASH_VERSINFO[0]}" in
-    3)
-      if grep -q bash-completion <<< "${all_formula}"; then
-        # shellcheck source=/dev/null
-        source "${brew_prefix}/etc/bash_completion"
-      fi
-    ;;
-    4)
-      if grep -q bash-completion2 <<< "${all_formula}"; then
-        # shellcheck source=/dev/null
-        source "${brew_prefix}/share/bash-completion/bash_completion"
-      fi
-    ;;
-  esac
-
-  command -v hub &>/dev/null &&
-    alias git="hub"
-
-  alias cask='brew cask'
-
-  unset brew_dir
-  unset formula_cache
-  unset cask_cache
-  unset all_formula
-  unset brew_prefix
-  unset cask_prefix
+if ! command -v brew >/dev/null 2>&1; then
+  return
 fi
+
+export HOMEBREW_NO_AUTO_UPDATE=true
+
+brew_prefix="$(brew --prefix)"
+cask_prefix="${brew_prefix}/Caskroom"
+
+brew_dir="${HOME}/.homebrew.d"
+[[ -d ${brew_dir} ]] || mkdir -p "${brew_dir}"
+
+formula_cache="${brew_dir}/formula"
+cask_cache="${brew_dir}/casks"
+
+# Cache formula if the cache is stale
+if expired "${formula_cache}"; then
+  cache_homebrew "${formula_cache}" "formula"
+fi
+
+# Cache casks if the cache is stale
+if expired "${cask_cache}"; then
+  cache_homebrew "${cask_cache}" "cask"
+fi
+
+# Read the cache, and use that for all future comparisons
+all_formula="$(< "${formula_cache}")"
+all_casks="$(< "${cask_cache}")"
+
+# now configure convenience paths, env. vars, etc.
+# based on what formulas are installed
+
+if grep -q -E '^go$' <<< "${all_formula}"; then
+  export GOPATH="${brew_prefix}/var/go"
+  export GOROOT="${brew_prefix}/opt/go/libexec"
+  pathmunge "${GOPATH}/bin" before
+fi
+
+if grep -q 'gnupg' <<< "${all_formula}"; then
+  GPG_TTY="$(tty)"
+  export GPG_TTY
+fi
+
+if grep -q 'ruby' <<< "${all_formula}"; then
+  pathmunge "${brew_prefix}/opt/ruby/bin" before
+  rehash
+
+  ruby_version="$(ruby -e 'puts RbConfig::CONFIG["ruby_version"]')"
+  pathmunge "${brew_prefix}/lib/ruby/gems/${ruby_version}/bin" before
+fi
+
+
+# Casks
+if grep -q -E '^google-cloud-sdk$' <<< "${all_casks}"; then
+  # shellcheck source=/dev/null
+  source "${cask_prefix}/google-cloud-sdk/latest/google-cloud-sdk/path.bash.inc"
+  # shellcheck source=/dev/null
+  source "${cask_prefix}/google-cloud-sdk/latest/google-cloud-sdk/completion.bash.inc"
+fi
+
+case "${BASH_VERSINFO[0]}" in
+  3)
+    if grep -q bash-completion <<< "${all_formula}"; then
+      # shellcheck source=/dev/null
+      source "${brew_prefix}/etc/bash_completion"
+    fi
+  ;;
+  4)
+    if grep -q bash-completion2 <<< "${all_formula}"; then
+      # shellcheck source=/dev/null
+      source "${brew_prefix}/share/bash-completion/bash_completion"
+    fi
+  ;;
+esac
+
+command -v hub &>/dev/null &&
+  alias git="hub"
+
+alias cask='brew cask'
+
+unset brew_dir
+unset formula_cache
+unset cask_cache
+unset all_formula
+unset brew_prefix
+unset cask_prefix
