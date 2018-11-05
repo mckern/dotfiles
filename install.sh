@@ -1,5 +1,18 @@
 #!/usr/bin/env bash
 
+sha256sum(){
+  local file
+  file="${1}"
+
+  if command -v shasum &>/dev/null; then
+    command shasum --algorithm 256 "${file}"
+  elif command -v gsha256sum &>/dev/null; then
+    command gsha256sum "${file}"
+  elif command -v sha256sum &>/dev/null; then
+    command sha256sum "${file}"
+  fi
+}
+
 # install
 # diff (everything)
 # diff (individual/detailed)
@@ -7,11 +20,7 @@
 # test?
 
 git ls-tree -r master --name-only | while read -r file; do
-  if [[ ${file} =~ ^\. ]] ||
-     [[ ${file} =~ ^README ]] ||
-     [[ ${file} =~ ^LICENSE ]] ||
-     [[ ${file} =~ .gitkeep ]] ||
-     [[ ${file} == $(basename "${0}") ]]; then
+  if [[ ${file} =~ ^\.|README|LICENSE|.gitkeep|$(basename "${0}") ]]; then
     continue
   fi
 
@@ -20,10 +29,10 @@ git ls-tree -r master --name-only | while read -r file; do
     installed_sum="$(sha256sum "${HOME}/.${file}" | awk '{print $1}')"
     if [[ "${repo_sum}" != "${installed_sum}" ]]; then
       echo "> ${file} differs from ~/.${file}"
-      echo "> local: ${repo_sum}"
+      echo    ">     local: ${repo_sum}"
       echo -e "> installed: ${installed_sum}\\n"
     fi
   else
-    echo "${HOME}/.${file} not found" 1>&2
+    echo -e "> ${HOME}/.${file} not found\\n" 1>&2
   fi
 done
