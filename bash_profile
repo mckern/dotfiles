@@ -159,6 +159,9 @@ alias rehash="hash -r"
 __counter=0
 __profiles="${HOME}/.profile.d"
 __secrets="${HOME}/.private.d"
+__dim='\033[2m'
+__normal='\033[22m'
+
 if [[ -d ${__profiles} ]]; then
   shopt -s nullglob
 
@@ -171,6 +174,14 @@ if [[ -d ${__profiles} ]]; then
       source "${__file}"
       __counter=$((__counter + 1))
     done
+
+    # If any secrets were sourced, print the count and reset the counter
+    if [[ ${__counter} -gt 0 ]]; then
+      if [[ ${TERM} =~ xterm ]]; then
+        printf "%b> Loaded %2s sub-profiles from %s%b\\n" "${__dim}" "${__counter}" "${__secrets}" "${__normal}"
+        __counter=0
+      fi
+    fi
   fi
 
   # Pre files
@@ -197,15 +208,12 @@ if [[ -d ${__profiles} ]]; then
   shopt -u nullglob
 fi
 
-__dim='\033[2m'
-__normal='\033[22m'
-
 # Wrap up counting the seconds since this started
 __end="$(date +"%s")"
 
 # Dump to screen and let me get on with my life!
 if [[ ${TERM} =~ xterm ]]; then
-  printf "%bProfile loaded in %s seconds%b\\n" "${__dim}" "$((__end-__begin))" "${__normal}"
-  printf "%b> Loaded %s sub-profiles from %s%b\\n" "${__dim}" "${__counter}" "${__profiles}" "${__normal}"
+  printf "%b> Loaded %02d sub-profiles from %s%b\\n" "${__dim}" "${__counter}" "${__profiles}" "${__normal}"
+  printf "%b> Profile loaded in %s seconds%b\\n" "${__dim}" "$((__end-__begin))" "${__normal}"
 fi
 unset __counter __profiles
