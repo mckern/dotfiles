@@ -46,9 +46,9 @@ end
 require 'readline'
 require 'awesome_print'
 require 'bond'
-require 'looksee'
+# require 'looksee'
 require 'pry-coolline'
-# require 'pry-byebug' if mri? && modern?
+require 'pry-byebug' if mri? && modern?
 # require 'pry-stack_explorer' if mri? && legacy?
 # require 'pry-nav' if jruby? && modern?
 # require 'pry-doc'
@@ -57,7 +57,7 @@ require 'pry-coolline'
 
 
 Pry.config.color = true
-Pry.prompt = Pry::SIMPLE_PROMPT
+Pry.config.prompt = Pry::Prompt[:simple][:value]
 Pry.config.pager = true
 Pry.config.history.file = "#{ENV['HOME']}/.irb_history"
 
