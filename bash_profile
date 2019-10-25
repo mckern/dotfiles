@@ -6,8 +6,20 @@
 
 # Owner: Ryan McKern
 
+timestamp() {
+  if command date --version 2>&1 | grep --quiet gnu; then
+    command date +'%s%3N'
+    return "${?}"
+  elif command -v python &>/dev/null; then
+    python -c 'import time; print(int(round(time.time() * 1000)))'
+    return "${?}"
+  fi
+
+  return 1
+}
+
 # Start counting how long it takes to source this profile
-__begin="$(date +"%s")"
+__begin="$(timestamp)"
 
 # Keep so, so, so much history
 export HISTFILESIZE=''
@@ -35,11 +47,11 @@ umask 0022
 __minimum_viable='3'
 
 # Don't do anything for non-interactive shells
-[[ -z "${PS1}"  ]] && return
+[[ -z "${PS1}" ]] && return
 
 # Set the old Gentoo default prompt if this isn't a dumb terminal
 if [[ ${TERM} != 'dumb' ]] && [[ -n ${BASH} ]]; then
-  if [[ ${UID} -eq "0" ]] ; then
+  if [[ ${UID} -eq "0" ]]; then
     # Privileged prompt, ending in #
     export PS1='\[\033[01;31m\]\h \[\033[01;34m\]\W \$ \[\033[00m\]'
   else
@@ -49,7 +61,7 @@ if [[ ${TERM} != 'dumb' ]] && [[ -n ${BASH} ]]; then
 fi
 
 # Are we using something greater than bash 2?
-if (( "${BASH_VERSINFO[0]}" < "${__minimum_viable}" )); then
+if (("${BASH_VERSINFO[0]}" < "${__minimum_viable}")); then
   echo "You're using an old version of Bash (${BASH_VERSION}). Sourcing .bash_profile will now halt." >&2
   return
 fi
@@ -57,10 +69,10 @@ fi
 # define pathmunge, and use that for $PATH manipulation.
 # pathmunge is normally provided in RHEL environments,
 # and this is copied almost wholesale from their implementation.
-pathmunge(){
-  if grep -v -E -q "(^|:)${1}(\$|:)" <<< "${PATH}"; then
+pathmunge() {
+  if grep -v -E -q "(^|:)${1}(\$|:)" <<<"${PATH}"; then
     [[ -d ${1} ]] || return
-    if [[ ${2} = "after" ]] ; then
+    if [[ ${2} == "after" ]]; then
       PATH="${PATH}:${1}"
     else
       PATH="${1}:${PATH}"
@@ -82,7 +94,7 @@ case "$(uname -s)" in
     ## Have we got local bin paths? Prepend them.
     pathmunge /usr/local/sbin before
     pathmunge /usr/local/bin before
-  ;;
+    ;;
 
   # This is for the 3 or 4 solaris machines you might encounter
   SunOS*)
@@ -107,7 +119,7 @@ case "$(uname -s)" in
 
     # If the TERM isn't something sane, lie
     [[ ${TERM} =~ xterm-color ]] && export TERM=xterm
-  ;;
+    ;;
 
   # This is for macOS.
   Darwin*)
@@ -121,20 +133,20 @@ case "$(uname -s)" in
     pathmunge /usr/local/mysql/bin after
 
     # Gotta clear that DNS cache somehow, right?
-    flushdns(){
+    flushdns() {
       sudo killall -HUP mDNSResponder
       return $?
     }
 
     # View man pages as PDF files
-    pman(){
+    pman() {
       command man -t "${@}" | open -g -f -a /Applications/Preview.app
       return $?
     }
 
     # Don't bother with `locate` or any findutils nonsense. Just use Spotlight.
     alias locate='mdfind -name'
-  ;;
+    ;;
 esac
 
 ###### Aliases & Functions: make your life easier ######
@@ -159,30 +171,29 @@ alias rehash="hash -r"
 __counter=0
 __profiles="${HOME}/.profile.d"
 __secrets="${HOME}/.private.d"
-__dim='\033[2m'
-__normal='\033[22m'
 
-if [[ -d ${__profiles} ]]; then
+# Private files, which should not be tracked
+# anywhere public. Probably contains tokens,
+# API keys, etc.
+if [[ -d ${__secrets} ]]; then
   shopt -s nullglob
 
-  # Private files, which should not be tracked
-  # anywhere public. Probably contains tokens,
-  # API keys, etc.
-  if [[ -d ${__secrets} ]]; then
-    for __file in "${__secrets}"/*.sh; do
-      # shellcheck source=/dev/null
-      source "${__file}"
-      __counter=$((__counter + 1))
-    done
+  for __file in "${__secrets}"/*.sh; do
+    # shellcheck source=/dev/null
+    source "${__file}"
+    __counter=$((__counter + 1))
+  done
 
-    # If any secrets were sourced, print the count and reset the counter
-    if [[ ${__counter} -gt 0 ]]; then
-      if [[ ${TERM} =~ xterm ]]; then
-        printf "%b> Loaded %2s sub-profiles from %s%b\\n" "${__dim}" "${__counter}" "${__secrets}" "${__normal}"
-        __counter=0
-      fi
-    fi
+  # If any secrets were sourced, print the count and reset the counter
+  if [[ ${__counter} -gt 0 ]]; then
+    export SHELL_SUBPROFILE_SECRETS="${__counter}"
+    __counter=0
   fi
+fi
+
+# Subprofiles will be sourced & counted
+if [[ -d ${__profiles} ]]; then
+  shopt -s nullglob
 
   # Pre files
   for __file in "${__profiles}"/pre_*.sh; do
@@ -209,11 +220,11 @@ if [[ -d ${__profiles} ]]; then
 fi
 
 # Wrap up counting the seconds since this started
-__end="$(date +"%s")"
-
-# Dump to screen and let me get on with my life!
-if [[ ${TERM} =~ xterm ]]; then
-  printf "%b> Loaded %02d sub-profiles from %s%b\\n" "${__dim}" "${__counter}" "${__profiles}" "${__normal}"
-  printf "%b> Profile loaded in %s seconds%b\\n" "${__dim}" "$((__end-__begin))" "${__normal}"
+__end="$(timestamp)"
+__delta="$((__end - __begin))"
+if [[ "${__delta}" -gt 0 ]]; then
+  SHELL_LOAD_TIME="$(bc <<<"scale=2; ${__delta}/1000")"
+  SHELL_LOAD_TIME="$(printf "%01.2f" "${SHELL_LOAD_TIME}")"
+  export SHELL_LOAD_TIME
 fi
-unset __counter __profiles
+export SHELL_SUBPROFILES="${__counter}"
