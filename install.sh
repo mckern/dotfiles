@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-sha256sum(){
+sha256sum() {
   local file
   file="${1}"
 
@@ -20,7 +20,7 @@ sha256sum(){
 # test?
 
 git ls-tree -r master --name-only | while read -r file; do
-  if [[ ${file} =~ ^\.|README|LICENSE|.gitkeep|$(basename "${0}") ]]; then
+  if [[ ${file} =~ ^\.|README|LICENSE|Brewfile|Aptfile|RPMfile|.gitkeep|$(basename "${0}") ]]; then
     continue
   fi
 
@@ -29,7 +29,7 @@ git ls-tree -r master --name-only | while read -r file; do
     installed_sum="$(sha256sum "${HOME}/.${file}" | awk '{print $1}')"
     if [[ "${repo_sum}" != "${installed_sum}" ]]; then
       echo "> ${file} differs from ~/.${file}"
-      echo    ">     local: ${repo_sum}"
+      echo ">        local: ${repo_sum}"
       echo -e "> installed: ${installed_sum}\\n"
     fi
   else
