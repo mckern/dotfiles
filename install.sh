@@ -1,14 +1,20 @@
 #!/usr/bin/env bash
 
+command_exists() {
+  local cmd
+  cmd="${1}"
+  type -P "${cmd}" &>/dev/null
+}
+
 sha256sum() {
   local file
   file="${1}"
 
-  if command -v shasum &>/dev/null; then
+  if command_exists shasum; then
     command shasum --algorithm 256 "${file}"
-  elif command -v gsha256sum &>/dev/null; then
+  elif command_exists gsha256sum; then
     command gsha256sum "${file}"
-  elif command -v sha256sum &>/dev/null; then
+  elif command_exists sha256sum; then
     command sha256sum "${file}"
   fi
 }
