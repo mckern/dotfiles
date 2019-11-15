@@ -1,0 +1,33 @@
+#sorendition "= rg" - Supposed to change colors, doesn't seem to
+
+# basic settings... self explainatory
+nethack on
+autodetach on
+startup_message off
+
+# the dash makes it a login shell
+#   defshell -bash
+shell -$SHELL
+activity ""
+bell_msg "[woof! woof!]"
+vbell on
+vbell_msg "[woof!]"
+defscrollback 2048
+nonblock on
+defutf8 on
+defbce on
+defflow auto
+msgwait 2
+altscreen on
+# escape ``
+#termcapinfo * ti@:te@
+termcapinfo xterm*|rxvt* 'ti@:te@'
+termcapinfo xterm*|rxvt* 'hs:ts=\E]2;:fs=\007:ds=\E]2;screen\007'
+
+
+# shelltitle "$ | bash"
+# backtick 1 15 15 cat %{HOME}/.pwd
+# hardstatus alwayslastline
+#hardstatus string '%{gk}[ %{G}%H:%h %{g}][%= %{wk}%?%-Lw%?%{=b kR}(%{W}%n*%f %?(%u)%?%{=b kR})%{= kw}%?%+Lw%?%?%= %{g}][%{Y}%h%{g}]'
+# hardstatus string '%{= kG}%-Lw%{= kW}%50> %n%f* %t%{= kG}%+Lw%< %{= kG}%-=%H:%h%{-}'
+#caption always "%{= kw}%-w%{= gW}%n %t%{-}%+w %-= %H:%h "
