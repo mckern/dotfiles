@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-epoch(){
+epoch() {
   if [[ ${1:-UNSET} == "UNSET" ]]; then
     date '+%s'
   else

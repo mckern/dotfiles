@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2139,SC2140
 
-is_alias(){
+is_alias() {
   [[ "$(type "${1}")" == "${1} is aliased to \`g${1}'" ]]
 }
 

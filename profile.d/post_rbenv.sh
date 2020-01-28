@@ -15,7 +15,7 @@ declare -x RBENV_ENABLED
 declare -x RBENV_ROOT
 declare -x RUBY_CONFIGURE_OPTS
 
-cpu_core_count(){
+cpu_core_count() {
   if command -v nproc &>/dev/null; then
     nproc
   elif command -v sysctl &>/dev/null; then
@@ -28,7 +28,7 @@ cpu_core_count(){
   return $?
 }
 
-enable_rvm(){
+enable_rvm() {
   [[ -n "${RBENV_ENABLED}" ]] && return
 
   RBENV_ROOT="$(brew --prefix)/var/rbenv"
@@ -42,7 +42,7 @@ enable_rvm(){
   eval "$(command rbenv init - --no-rehash)"
 }
 
-rbenv(){
+rbenv() {
   if [[ -z "${RBENV_ENABLED}" ]]; then
     echo -e "${txtdim}> rbenv is initializing...${txtrst}"
     enable_rvm

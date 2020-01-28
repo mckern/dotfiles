@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if type -P dig &> /dev/null; then
+if type -P dig &>/dev/null; then
   # Return MX records for a given domain
   mx() {
     [[ ${1:-UNSET} == "UNSET" ]] && return 1

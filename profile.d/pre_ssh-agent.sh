@@ -27,7 +27,7 @@ initialize_socket() {
   fi
 
   # Initialize the socket since nothing has been found
-  if "${ssh_agent}" -s | head -n2 > "${ssh_agent_conf}"; then
+  if "${ssh_agent}" -s | head -n2 >"${ssh_agent_conf}"; then
     # shellcheck source=/dev/null
     source "${ssh_agent_conf}"
     return 0

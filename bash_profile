@@ -88,65 +88,65 @@ pathmunge() {
 # environment this is being run in, and configure it
 # accordingly. Currently supports Solaris, macOS & Linux.
 case "$(uname -s)" in
-  # All linux configuration goes here
-  Linux*)
+# All linux configuration goes here
+Linux*)
 
-    ## Have we got local bin paths? Prepend them.
-    pathmunge /usr/local/sbin before
+  ## Have we got local bin paths? Prepend them.
+  pathmunge /usr/local/sbin before
+  pathmunge /usr/local/bin before
+  ;;
+
+# This is for the 3 or 4 solaris machines you might encounter
+SunOS*)
+  # Seriously. I want to know.
+  echo -e "\n\nWhere did you find a Solaris machine? Sun is dead"
+  echo -e "and Oracle EOL'ed Solaris in August 2017. RIP Solaris.\n\n"
+
+  # Don't even bother with whatever path we've inherited. Build a new one.
+  # Make sure that pathmunge is a function, not some weird whoknowswhat
+  if type pathmunge | grep -q function; then
+    pathmunge /bin before
+    pathmunge /usr/bin before
+    pathmunge /sbin after
+    pathmunge /usr/sbin after
+    pathmunge /usr/xpg4/bin before
     pathmunge /usr/local/bin before
-    ;;
-
-  # This is for the 3 or 4 solaris machines you might encounter
-  SunOS*)
-    # Seriously. I want to know.
-    echo -e "\n\nWhere did you find a Solaris machine? Sun is dead"
-    echo -e "and Oracle EOL'ed Solaris in August 2017. RIP Solaris.\n\n"
-
-    # Don't even bother with whatever path we've inherited. Build a new one.
-    # Make sure that pathmunge is a function, not some weird whoknowswhat
-    if type pathmunge | grep -q function; then
-      pathmunge /bin before
-      pathmunge /usr/bin before
-      pathmunge /sbin after
-      pathmunge /usr/sbin after
-      pathmunge /usr/xpg4/bin before
-      pathmunge /usr/local/bin before
-      pathmunge /usr/local/sbin before
-      pathmunge /opt/SUNWspro/bin before
-      pathmunge /usr/ccs/bin before
-      pathmunge /hub/SunOS/5.8/sun4u/apps/openssh-3.0p1/bin before
-    fi
-
-    # If the TERM isn't something sane, lie
-    [[ ${TERM} =~ xterm-color ]] && export TERM=xterm
-    ;;
-
-  # This is for macOS.
-  Darwin*)
-
-    # Here's some paths that might exist. If they do, we wants them so badly!
-    pathmunge /opt/local/sbin before
-    pathmunge /opt/local/bin before
     pathmunge /usr/local/sbin before
-    pathmunge /usr/local/bin before
-    pathmunge /Developer/Tools after
-    pathmunge /usr/local/mysql/bin after
+    pathmunge /opt/SUNWspro/bin before
+    pathmunge /usr/ccs/bin before
+    pathmunge /hub/SunOS/5.8/sun4u/apps/openssh-3.0p1/bin before
+  fi
 
-    # Gotta clear that DNS cache somehow, right?
-    flushdns() {
-      sudo killall -HUP mDNSResponder
-      return $?
-    }
+  # If the TERM isn't something sane, lie
+  [[ ${TERM} =~ xterm-color ]] && export TERM=xterm
+  ;;
 
-    # View man pages as PDF files
-    pman() {
-      command man -t "${@}" | open -g -f -a /Applications/Preview.app
-      return $?
-    }
+# This is for macOS.
+Darwin*)
 
-    # Don't bother with `locate` or any findutils nonsense. Just use Spotlight.
-    alias locate='mdfind -name'
-    ;;
+  # Here's some paths that might exist. If they do, we wants them so badly!
+  pathmunge /opt/local/sbin before
+  pathmunge /opt/local/bin before
+  pathmunge /usr/local/sbin before
+  pathmunge /usr/local/bin before
+  pathmunge /Developer/Tools after
+  pathmunge /usr/local/mysql/bin after
+
+  # Gotta clear that DNS cache somehow, right?
+  flushdns() {
+    sudo killall -HUP mDNSResponder
+    return $?
+  }
+
+  # View man pages as PDF files
+  pman() {
+    command man -t "${@}" | open -g -f -a /Applications/Preview.app
+    return $?
+  }
+
+  # Don't bother with `locate` or any findutils nonsense. Just use Spotlight.
+  alias locate='mdfind -name'
+  ;;
 esac
 
 ###### Aliases & Functions: make your life easier ######

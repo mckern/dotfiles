@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 
-function urldecode(){
+function urldecode() {
   local url="${1}"
   python -c "import sys, urllib; print urllib.unquote_plus('${url}')"
   return $?
 }
 
-function urlencode(){
+function urlencode() {
   local url="${1}"
   python -c "import sys, urllib; print urllib.quote_plus('${url}')"
   return $?
 }
 
-if type -P curl &> /dev/null; then
+if type -P curl &>/dev/null; then
   # Return the status code and effective, post-redirected state of a URL
   statuscode() {
     [[ ${1:-UNSET} == "UNSET" ]] && return 1
@@ -29,8 +29,8 @@ if type -P curl &> /dev/null; then
   }
 
   contenttype() {
-    [[ ${1:-UNSET} == "UNSET" ]] && return 1;
-    local action="${2:-GET}";
+    [[ ${1:-UNSET} == "UNSET" ]] && return 1
+    local action="${2:-GET}"
 
     curl \
       --request "${action}" \
@@ -56,31 +56,31 @@ if type -P curl &> /dev/null; then
     return $?
   }
 
-  curl-sha256(){
+  curl-sha256() {
     [[ ${1:-UNSET} == "UNSET" ]] && return 1
 
     curl \
       --progress-bar \
       --location \
       "${1}" |
-    sha256sum |
-    awk '{print $1}'
+      sha256sum |
+      awk '{print $1}'
     return $?
   }
 
-  curl-md5sum(){
+  curl-md5sum() {
     [[ ${1:-UNSET} == "UNSET" ]] && return 1
 
     curl \
       --progress-bar \
       --location \
       "${1}" |
-    md5sum |
-    awk '{print $1}'
+      md5sum |
+      awk '{print $1}'
     return $?
   }
 
-  brute-curl(){
+  brute-curl() {
     [[ ${1:-UNSET} == "UNSET" ]] && return 1
 
     local no_params="${1%%\?*}"

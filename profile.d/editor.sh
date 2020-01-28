@@ -9,9 +9,9 @@ unset EDITOR
 # that I can make do with a small pile of other editors. The way
 # that this works, the last resolved editor gets to be the
 # default editor, so from least wanted to move.
-command -v vi   &>/dev/null && export EDITOR='vi'
+command -v vi &>/dev/null && export EDITOR='vi'
 command -v gvim &>/dev/null && export EDITOR='gvim'
-command -v vim  &>/dev/null && export EDITOR='vim'
+command -v vim &>/dev/null && export EDITOR='vim'
 command -v mvim &>/dev/null && export EDITOR='mvim'
 command -v nano &>/dev/null && export EDITOR='nano -w'
 command -v mate &>/dev/null && export EDITOR='mate -w'

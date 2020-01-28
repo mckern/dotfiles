@@ -13,17 +13,17 @@ flat_prompt="${PS1}"
 
 ###### Git functions ######
 
-git_test_directory(){
-  git rev-parse --git-dir &> /dev/null
+git_test_directory() {
+  git rev-parse --git-dir &>/dev/null
   return $?
 }
 
 git_branch_name() {
   local branch
-  branch="$(git rev-parse --abbrev-ref HEAD 2> /dev/null)"
+  branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
 
   if [[ ${branch} == "HEAD" ]]; then
-    branch="$(git describe --all 2> /dev/null)"
+    branch="$(git describe --all 2>/dev/null)"
   fi
 
   echo "(git:${branch})"
@@ -32,7 +32,7 @@ git_branch_name() {
 
 git_test_dirty_branch() {
   local status
-  status="$(git status --porcelain 2> /dev/null)"
+  status="$(git status --porcelain 2>/dev/null)"
 
   if [[ -n ${status} ]]; then
     return 0
@@ -40,7 +40,7 @@ git_test_dirty_branch() {
   return 1
 }
 
-toggle_git_prompt(){
+toggle_git_prompt() {
   scm_branch="$(git_branch_name)"
 
   if git_test_dirty_branch; then
@@ -55,14 +55,14 @@ toggle_git_prompt(){
 
 ###### HG functions ######
 
-hg_test_directory(){
-  hg root &> /dev/null
+hg_test_directory() {
+  hg root &>/dev/null
   return $?
 }
 
 hg_branch_name() {
   local branch
-  branch="$(hg id --branch 2> /dev/null)"
+  branch="$(hg id --branch 2>/dev/null)"
 
   echo "(hg:${branch})"
   return 0
@@ -70,7 +70,7 @@ hg_branch_name() {
 
 hg_test_dirty_branch() {
   local status
-  status="$(hg status 2> /dev/null)"
+  status="$(hg status 2>/dev/null)"
 
   if [[ -n ${status} ]]; then
     return 0
@@ -78,7 +78,7 @@ hg_test_dirty_branch() {
   return 1
 }
 
-toggle_hg_prompt(){
+toggle_hg_prompt() {
   scm_branch="$(hg_branch_name)"
 
   if hg_test_dirty_branch; then
@@ -93,19 +93,19 @@ toggle_hg_prompt(){
 
 ###### Generic functions
 
-set_flat_prompt(){
+set_flat_prompt() {
   export PS1="${flat_prompt}"
 }
 
-set_scm_prompt(){
+set_scm_prompt() {
   export PS1="\\[${bldgrn}\\]\\u@\\h \\[${bldblu}\\]\\W \\[${bldcyn}\\]\${scm_branch} \\[${bldblu}\\]\$\\[${txtrst}\\] "
 }
 
-set_dirty_scm_prompt(){
+set_dirty_scm_prompt() {
   export PS1="\\[${bldgrn}\\]\\u@\\h \\[${bldblu}\\]\\W \\[${bldred}\\]\${scm_branch} \\[${bldblu}\\]\$\\[${txtrst}\\] "
 }
 
-toggle_prompt(){
+toggle_prompt() {
   if git_test_directory; then
     toggle_git_prompt
     return 0
