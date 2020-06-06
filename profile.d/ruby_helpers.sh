@@ -8,7 +8,7 @@ bundle_wrapper() {
     fi
   done
 
-  if ! command -v bundler >/dev/null 2>&1; then
+  if ! command -v bundler > /dev/null 2>&1; then
     echo -e "error: \`bundler' not found in ${PATH}; aborting" >&2
     return 1
   fi

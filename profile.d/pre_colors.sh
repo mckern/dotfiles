@@ -54,14 +54,14 @@ itlwht="${txtwht}${txtitl}" # White
 
 # Underline
 txtund="$(tput smul || echo '\033[4m')"
-undblk="${txtblk}${txtund}"                 # Black
-undred="${txtred}${txtund}"                 # Red
-undgrn="${txtgrn}${txtund}"                 # Green
-undylw="${txtylw}${txtund}"                 # Yellow
-undblu="${txtblu}${txtund}"                 # Blue
-undpur="${txtpur}${txtund}"                 # Purple
-undcyn="${txtcyn}${txtund}"                 # Cyan
-undwht="${txtwht}${txtund}"                 # White
+undblk="${txtblk}${txtund}" # Black
+undred="${txtred}${txtund}" # Red
+undgrn="${txtgrn}${txtund}" # Green
+undylw="${txtylw}${txtund}" # Yellow
+undblu="${txtblu}${txtund}" # Blue
+undpur="${txtpur}${txtund}" # Purple
+undcyn="${txtcyn}${txtund}" # Cyan
+undwht="${txtwht}${txtund}" # White
 
 # Background
 bakblk="$(tput setab 0 || echo '\033[40m')" # Black
@@ -75,8 +75,3 @@ bakwht="$(tput setab 7 || echo '\033[47m')" # White
 
 # Reset
 txtrst="$(tput sgr0 || echo '\033[0m')" # Text Reset
-
-# Export COLORS_DEFINED so that other scripts can test
-# for these color codes.
-declare -x COLORS_DEFINED
-COLORS_DEFINED="true"

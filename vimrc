@@ -32,5 +32,5 @@ set lazyredraw
 set incsearch           " search as characters are entered
 set hlsearch            " highlight matches
 set guifont=Consolas:h16
-colorscheme railscasts  " use the railscast color scheme
+" colorscheme railscasts  " use the railscast color scheme
 filetype indent on      " load filetype-specific indent files

@@ -12,7 +12,7 @@ function urlencode() {
   return $?
 }
 
-if type -P curl &>/dev/null; then
+if type -P curl &> /dev/null; then
   # Return the status code and effective, post-redirected state of a URL
   statuscode() {
     [[ ${1:-UNSET} == "UNSET" ]] && return 1
@@ -22,7 +22,7 @@ if type -P curl &>/dev/null; then
       --request "${action}" \
       --silent \
       --include \
-      --write-out "%{url_effective} %{http_code}\\n" \
+      --write-out '%{url_effective} %{http_code}\n' \
       --output /dev/null \
       "${1}"
     return $?
@@ -37,7 +37,7 @@ if type -P curl &>/dev/null; then
       --silent \
       --include \
       --location \
-      --write-out "%{url_effective} %{content_type}\\n" \
+      --write-out '%{url_effective} %{content_type}\n' \
       --output /dev/null \
       "${1}"
     return $?

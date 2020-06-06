@@ -10,7 +10,7 @@ timestamp() {
   if command date --version 2>&1 | grep --quiet gnu; then
     command date +'%s%3N'
     return "${?}"
-  elif command -v python &>/dev/null; then
+  elif command -v python &> /dev/null; then
     python -c 'import time; print(int(round(time.time() * 1000)))'
     return "${?}"
   fi
@@ -21,6 +21,7 @@ timestamp() {
 # Start counting how long it takes to source this profile
 __begin="$(timestamp)"
 
+export HISTTIMEFORMAT="%F %T "
 # Keep so, so, so much history
 export HISTFILESIZE=''
 export HISTSIZE=''
@@ -47,7 +48,7 @@ umask 0022
 __minimum_viable='3'
 
 # Don't do anything for non-interactive shells
-[[ -z "${PS1}" ]] && return
+[[ -z ${PS1}   ]] && return
 
 # Set the old Gentoo default prompt if this isn't a dumb terminal
 if [[ ${TERM} != 'dumb' ]] && [[ -n ${BASH} ]]; then
@@ -70,7 +71,7 @@ fi
 # pathmunge is normally provided in RHEL environments,
 # and this is copied almost wholesale from their implementation.
 pathmunge() {
-  if grep -v -E -q "(^|:)${1}(\$|:)" <<<"${PATH}"; then
+  if grep -v -E -q "(^|:)${1}(\$|:)" <<< "${PATH}"; then
     [[ -d ${1} ]] || return
     if [[ ${2} == "after" ]]; then
       PATH="${PATH}:${1}"
@@ -88,65 +89,65 @@ pathmunge() {
 # environment this is being run in, and configure it
 # accordingly. Currently supports Solaris, macOS & Linux.
 case "$(uname -s)" in
-# All linux configuration goes here
-Linux*)
+  # All linux configuration goes here
+  Linux*)
 
-  ## Have we got local bin paths? Prepend them.
-  pathmunge /usr/local/sbin before
-  pathmunge /usr/local/bin before
-  ;;
-
-# This is for the 3 or 4 solaris machines you might encounter
-SunOS*)
-  # Seriously. I want to know.
-  echo -e "\n\nWhere did you find a Solaris machine? Sun is dead"
-  echo -e "and Oracle EOL'ed Solaris in August 2017. RIP Solaris.\n\n"
-
-  # Don't even bother with whatever path we've inherited. Build a new one.
-  # Make sure that pathmunge is a function, not some weird whoknowswhat
-  if type pathmunge | grep -q function; then
-    pathmunge /bin before
-    pathmunge /usr/bin before
-    pathmunge /sbin after
-    pathmunge /usr/sbin after
-    pathmunge /usr/xpg4/bin before
-    pathmunge /usr/local/bin before
+    ## Have we got local bin paths? Prepend them.
     pathmunge /usr/local/sbin before
-    pathmunge /opt/SUNWspro/bin before
-    pathmunge /usr/ccs/bin before
-    pathmunge /hub/SunOS/5.8/sun4u/apps/openssh-3.0p1/bin before
-  fi
+    pathmunge /usr/local/bin before
+    ;;
 
-  # If the TERM isn't something sane, lie
-  [[ ${TERM} =~ xterm-color ]] && export TERM=xterm
-  ;;
+  # This is for the 3 or 4 solaris machines you might encounter
+  SunOS*)
+    # Seriously. I want to know.
+    echo -e "\n\nWhere did you find a Solaris machine? Sun is dead"
+    echo -e "and Oracle EOL'ed Solaris in August 2017. RIP Solaris.\n\n"
 
-# This is for macOS.
-Darwin*)
+    # Don't even bother with whatever path we've inherited. Build a new one.
+    # Make sure that pathmunge is a function, not some weird whoknowswhat
+    if type pathmunge | grep -q function; then
+      pathmunge /bin before
+      pathmunge /usr/bin before
+      pathmunge /sbin after
+      pathmunge /usr/sbin after
+      pathmunge /usr/xpg4/bin before
+      pathmunge /usr/local/bin before
+      pathmunge /usr/local/sbin before
+      pathmunge /opt/SUNWspro/bin before
+      pathmunge /usr/ccs/bin before
+      pathmunge /hub/SunOS/5.8/sun4u/apps/openssh-3.0p1/bin before
+    fi
 
-  # Here's some paths that might exist. If they do, we wants them so badly!
-  pathmunge /opt/local/sbin before
-  pathmunge /opt/local/bin before
-  pathmunge /usr/local/sbin before
-  pathmunge /usr/local/bin before
-  pathmunge /Developer/Tools after
-  pathmunge /usr/local/mysql/bin after
+    # If the TERM isn't something sane, lie
+    [[ ${TERM} =~ xterm-color ]] && export TERM=xterm
+    ;;
 
-  # Gotta clear that DNS cache somehow, right?
-  flushdns() {
-    sudo killall -HUP mDNSResponder
-    return $?
-  }
+  # This is for macOS.
+  Darwin*)
 
-  # View man pages as PDF files
-  pman() {
-    command man -t "${@}" | open -g -f -a /Applications/Preview.app
-    return $?
-  }
+    # Here's some paths that might exist. If they do, we wants them so badly!
+    pathmunge /opt/local/sbin before
+    pathmunge /opt/local/bin before
+    pathmunge /usr/local/sbin before
+    pathmunge /usr/local/bin before
+    pathmunge /Developer/Tools after
+    pathmunge /usr/local/mysql/bin after
 
-  # Don't bother with `locate` or any findutils nonsense. Just use Spotlight.
-  alias locate='mdfind -name'
-  ;;
+    # Gotta clear that DNS cache somehow, right?
+    flushdns() {
+      sudo killall -HUP mDNSResponder
+      return $?
+    }
+
+    # View man pages as PDF files
+    pman() {
+      command man -t "${@}" | open -g -f -a /Applications/Preview.app
+      return $?
+    }
+
+    # Don't bother with `locate` or any findutils nonsense. Just use Spotlight.
+    alias locate='mdfind -name'
+    ;;
 esac
 
 ###### Aliases & Functions: make your life easier ######
@@ -222,8 +223,8 @@ fi
 # Wrap up counting the seconds since this started
 __end="$(timestamp)"
 __delta="$((__end - __begin))"
-if [[ "${__delta}" -gt 0 ]]; then
-  SHELL_LOAD_TIME="$(bc <<<"scale=2; ${__delta}/1000")"
+if [[ ${__delta} -gt 0   ]]; then
+  SHELL_LOAD_TIME="$(bc <<< "scale=2; ${__delta}/1000")"
   SHELL_LOAD_TIME="$(printf "%01.2f" "${SHELL_LOAD_TIME}")"
   export SHELL_LOAD_TIME
 fi

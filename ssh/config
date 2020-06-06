@@ -8,15 +8,9 @@ IgnoreUnknown AddKeysToAgent
   UseKeychain yes
   AddKeysToAgent yes
 
-Host *
+Host *.local *.home.mckern.sh
   ControlMaster auto
-  # from https://man.openbsd.org/ssh_config
-  # %C is a hash of %l%h%p%r:
-  #   %l: The local hostname, including the domain name
-  #   %h: The remote hostname
-  #   %p: The remote port
-  #   %r: The remote username
-  ControlPath ~/.ssh/sockets/%C.sock
+  ControlPath ~/.ssh/sockets/cm-%r@%h:%p
   ControlPersist 600
   ServerAliveInterval 60
   UserKnownHostsFile ~/.ssh/known_hosts
@@ -31,6 +25,7 @@ Host 192.168.1.2
 Host *.local *.home.mckern.sh
   ControlMaster no
   IdentityFile ~/.ssh/personal_ed25519
+  User ryan
 
 Host github.com
   ControlMaster no

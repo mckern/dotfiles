@@ -12,7 +12,7 @@ test_socket() {
 initialize_socket() {
   local ssh_conf_dir="${SSH_CONF_DIR:-${HOME}/.ssh}"
   local ssh_agent_conf="${SSH_AGENT_CONF:-${ssh_conf_dir}/agent}"
-  local ssh_agent="${SSH_AGENT:-$(command -v ssh-agent 2>/dev/null)}"
+  local ssh_agent="${SSH_AGENT:-$(command -v ssh-agent 2> /dev/null)}"
 
   # Ensure that an SSH agent command exists
   if [[ -z ${ssh_agent} ]]; then
@@ -27,7 +27,7 @@ initialize_socket() {
   fi
 
   # Initialize the socket since nothing has been found
-  if "${ssh_agent}" -s | head -n2 >"${ssh_agent_conf}"; then
+  if "${ssh_agent}" -s | head -n2 > "${ssh_agent_conf}"; then
     # shellcheck source=/dev/null
     source "${ssh_agent_conf}"
     return 0

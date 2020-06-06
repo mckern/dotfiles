@@ -22,11 +22,15 @@ gnu_bins=(
 )
 
 for bin in "${gnu_bins[@]}"; do
-  if command -v "g${bin}" &>/dev/null; then
+  if command -v "g${bin}" &> /dev/null; then
     alias "${bin}"="g${bin}"
   fi
 done
 
-if is_alias "ls"; then
-  alias "ls"="gls --classify --color"
+if command -pv exa &> /dev/null; then
+  alias "ls"="exa --classify --color=auto"
+elif is_alias "ls"; then
+  alias "ls"="gls --classify --color=auto"
 fi
+
+unset is_alias

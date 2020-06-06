@@ -42,24 +42,27 @@ cache_homebrew() {
 
   if ! [[ -f ${file} ]]; then
     case "${type}" in
-    formula)
-      brew list >"${file}"
-      return "${?}"
-      ;;
-    cask)
-      brew cask list >"${file}"
-      return "${?}"
-      ;;
+      formula)
+        brew list > "${file}"
+        return "${?}"
+        ;;
+      cask)
+        brew cask list > "${file}"
+        return "${?}"
+        ;;
     esac
   fi
 }
 
 # If we're using homebrew to manage things, prepend the relevant bits
-if ! command -v brew >/dev/null 2>&1; then
+if ! command -v brew > /dev/null 2>&1; then
   return
 fi
 
-export HOMEBREW_NO_AUTO_UPDATE=true
+export \
+  HOMEBREW_NO_ANALYTICS=true \
+  HOMEBREW_NO_EMOJI=true \
+  HOMEBREW_UPDATE_TO_TAG=true
 
 brew_prefix="$(brew --prefix)"
 cask_prefix="${brew_prefix}/Caskroom"
@@ -81,24 +84,24 @@ if expired "${cask_cache}"; then
 fi
 
 # Read the cache, and use that for all future comparisons
-all_formula="$(<"${formula_cache}")"
-all_casks="$(<"${cask_cache}")"
+all_formula="$(< "${formula_cache}")"
+all_casks="$(< "${cask_cache}")"
 
 # now configure convenience paths, env. vars, etc.
 # based on what formulas are installed
 
-if grep -q -E '^go$' <<<"${all_formula}"; then
+if grep -q -E '^go$' <<< "${all_formula}"; then
   export GOPATH="${brew_prefix}/var/go"
   export GOROOT="${brew_prefix}/opt/go/libexec"
   pathmunge "${GOPATH}/bin" before
 fi
 
-if grep -q 'gnupg' <<<"${all_formula}"; then
+if grep -q 'gnupg' <<< "${all_formula}"; then
   GPG_TTY="$(tty)"
   export GPG_TTY
 fi
 
-if grep -q 'ruby' <<<"${all_formula}"; then
+if grep -q 'ruby' <<< "${all_formula}"; then
   pathmunge "${brew_prefix}/opt/ruby/bin" before
   rehash
 
@@ -107,7 +110,7 @@ if grep -q 'ruby' <<<"${all_formula}"; then
 fi
 
 # Casks
-if grep -q -E '^google-cloud-sdk$' <<<"${all_casks}"; then
+if grep -q -E '^google-cloud-sdk$' <<< "${all_casks}"; then
   # shellcheck source=/dev/null
   source "${cask_prefix}/google-cloud-sdk/latest/google-cloud-sdk/path.bash.inc"
   # shellcheck source=/dev/null
@@ -115,22 +118,19 @@ if grep -q -E '^google-cloud-sdk$' <<<"${all_casks}"; then
 fi
 
 case "${BASH_VERSINFO[0]}" in
-3)
-  if grep -q bash-completion <<<"${all_formula}"; then
-    # shellcheck source=/dev/null
-    source "${brew_prefix}/etc/bash_completion"
-  fi
-  ;;
-4)
-  if grep -q bash-completion2 <<<"${all_formula}"; then
-    # shellcheck source=/dev/null
-    source "${brew_prefix}/share/bash-completion/bash_completion"
-  fi
-  ;;
+  3)
+    if grep -q bash-completion <<< "${all_formula}"; then
+      # shellcheck source=/dev/null
+      source "${brew_prefix}/etc/bash_completion"
+    fi
+    ;;
+  4)
+    if grep -q bash-completion2 <<< "${all_formula}"; then
+      # shellcheck source=/dev/null
+      source "${brew_prefix}/share/bash-completion/bash_completion"
+    fi
+    ;;
 esac
-
-command -v hub &>/dev/null &&
-  alias git="hub"
 
 alias cask='brew cask'
 

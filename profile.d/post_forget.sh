@@ -4,7 +4,7 @@ export HISTIGNORE="${HISTIGNORE}:forget*"
 
 forget() {
   if [[ ${#} == 0 ]]; then
-    (
+    ( 
       __histfile="$(mktemp)"
       PROMPT_COMMAND='' \
         HISTFILE="${__histfile}" \

@@ -56,7 +56,7 @@ rescue LoadError
 end
 
 if defined? IRB
-  require 'fancy_irb'
+	require 'fancy_irb'
   require 'irb/ext/save-history'
   require 'irbtools/configure'
   require 'irb/completion'

@@ -3,7 +3,7 @@
 command_exists() {
   local cmd
   cmd="${1}"
-  type -P "${cmd}" &>/dev/null
+  command -v "${cmd}" &> /dev/null
 }
 
 sha256sum() {
@@ -25,7 +25,7 @@ sha256sum() {
 # check
 # test?
 
-git ls-tree -r master --name-only | while read -r file; do
+while read -r file; do
   if [[ ${file} =~ ^\.|README|LICENSE|Brewfile|Aptfile|RPMfile|.gitkeep|$(basename "${0}") ]]; then
     continue
   fi
@@ -33,7 +33,7 @@ git ls-tree -r master --name-only | while read -r file; do
   if [[ -f "${HOME}/.${file}" ]]; then
     repo_sum="$(sha256sum "${file}" | awk '{print $1}')"
     installed_sum="$(sha256sum "${HOME}/.${file}" | awk '{print $1}')"
-    if [[ "${repo_sum}" != "${installed_sum}" ]]; then
+    if [[ ${repo_sum} != "${installed_sum}"   ]]; then
       echo "> ${file} differs from ~/.${file}"
       echo ">        local: ${repo_sum}"
       echo -e "> installed: ${installed_sum}\\n"
@@ -41,4 +41,4 @@ git ls-tree -r master --name-only | while read -r file; do
   else
     echo -e "> ${HOME}/.${file} not found\\n" 1>&2
   fi
-done
+done < <(git ls-tree -r master --name-only)
