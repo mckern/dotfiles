@@ -49,10 +49,6 @@ ehthumbs.db
 Thumbs.db
 *~
 
-# Bundler trash #
-#################
-.bundle
-
 # Jetbrains metadata #
 ######################
 /.idea
